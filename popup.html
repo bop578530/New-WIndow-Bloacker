@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>New Window Blocker</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;500&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      width: 280px;
+      background: #0e0e10;
+      color: #f0ede8;
+      font-family: 'DM Sans', sans-serif;
+      padding: 20px;
+      user-select: none;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .icon-wrap {
+      width: 36px;
+      height: 36px;
+      background: #1c1c1f;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    h1 {
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: #f0ede8;
+    }
+
+    .subtitle {
+      font-size: 11px;
+      color: #666;
+      margin-top: 1px;
+    }
+
+    .card {
+      background: #1a1a1d;
+      border: 1px solid #2a2a2f;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .toggle-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #e0ddd8;
+    }
+
+    .toggle-desc {
+      font-size: 11px;
+      color: #555;
+      margin-top: 4px;
+    }
+
+    /* Toggle switch */
+    .switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .switch input { opacity: 0; width: 0; height: 0; }
+
+    .slider {
+      position: absolute;
+      inset: 0;
+      background: #2d2d33;
+      border-radius: 24px;
+      cursor: pointer;
+      transition: background 0.25s;
+    }
+
+    .slider:before {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      left: 3px;
+      top: 3px;
+      background: #666;
+      border-radius: 50%;
+      transition: transform 0.25s, background 0.25s;
+    }
+
+    input:checked + .slider { background: #1a3a2a; }
+    input:checked + .slider:before {
+      transform: translateX(20px);
+      background: #4ade80;
+    }
+
+    /* Status badge */
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #222;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #4ade80;
+      box-shadow: 0 0 6px #4ade8088;
+      transition: background 0.25s, box-shadow 0.25s;
+      flex-shrink: 0;
+    }
+
+    .dot.off {
+      background: #444;
+      box-shadow: none;
+    }
+
+    .status-text {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: #4ade80;
+      transition: color 0.25s;
+    }
+
+    .status-text.off { color: #444; }
+
+    /* Stats */
+    .stats {
+      display: flex;
+      gap: 8px;
+    }
+
+    .stat-box {
+      flex: 1;
+      background: #111113;
+      border: 1px solid #222;
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .stat-num {
+      font-family: 'Space Mono', monospace;
+      font-size: 20px;
+      font-weight: 700;
+      color: #4ade80;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      color: #555;
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .reset-btn {
+      width: 100%;
+      background: none;
+      border: 1px solid #2a2a2f;
+      border-radius: 8px;
+      color: #555;
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      padding: 8px;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+      margin-top: 12px;
+    }
+
+    .reset-btn:hover {
+      color: #888;
+      border-color: #444;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="icon-wrap">🚫</div>
+    <div>
+      <h1>WINDOW BLOCKER</h1>
+      <div class="subtitle">new tab / popup guard</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="toggle-row">
+      <div>
+        <div class="toggle-label">Block new windows</div>
+        <div class="toggle-desc">Redirect _blank links to current tab</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="toggle" checked />
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="status">
+      <div class="dot" id="dot"></div>
+      <span class="status-text" id="statusText">ACTIVE — blocking new windows</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="stats">
+      <div class="stat-box">
+        <div class="stat-num" id="blockedCount">0</div>
+        <div class="stat-label">Blocked</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num" id="sessionCount">0</div>
+        <div class="stat-label">This session</div>
+      </div>
+    </div>
+    <button class="reset-btn" id="resetBtn">RESET COUNTERS</button>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
